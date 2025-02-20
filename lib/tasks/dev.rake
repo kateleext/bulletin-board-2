@@ -6,12 +6,26 @@ task({ :sample_data => :environment }) do
     ActiveRecord::Base.connection.reset_pk_sequence!(t)
   end
 
-  Board.destroy_all
-  Post.destroy_all
+  if Rails.env.development?
+    Board.destroy_all
+    Post.destroy_all
+    User.destroy_all
+  end
+
+  usernames = ["kate", "miki", "yulanda", "sindhuja", "kat"]
+
+  usernames.each do |username|
+    user = User.new
+    user.email = "#{username}@example.com"
+    user.password = "password"
+    user.save
+  end
+    
   
   5.times do
     board = Board.new
     board.name = Faker::Address.community
+    board.user_id = User.all.sample.id
     board.save
 
     rand(10..50).times do
@@ -21,6 +35,7 @@ task({ :sample_data => :environment }) do
       post.body = Faker::Lorem.paragraphs(number: rand(1..5), supplemental: true).join("\n\n")
       post.created_at = Faker::Date.backward(days: 120)
       post.expires_on = post.created_at + rand(3..90).days
+      post.user_id = User.all.sample.id
       post.save
     end
   end

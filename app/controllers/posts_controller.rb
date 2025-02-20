@@ -23,6 +23,7 @@ class PostsController < ApplicationController
     the_post.body = params.fetch("query_body")
     the_post.expires_on = params.fetch("query_expires_on")
     the_post.board_id = params.fetch("query_board_id")
+    the_post.user_id = current_user.id
 
     if the_post.valid?
       the_post.save
@@ -50,11 +51,12 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    the_id = params.fetch("path_id")
-    the_post = Post.where({ :id => the_id }).at(0)
+    board_id = params.fetch("board_id")
+    post_id = params.fetch("post_id")
+    the_post = Post.where({ :id => post_id }).at(0)
 
     the_post.destroy
 
-    redirect_to("/posts", { :notice => "Post deleted successfully."} )
+    redirect_to("/boards/#{board_id}", { :notice => "Post deleted successfully."} )
   end
 end

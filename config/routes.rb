@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   get("/", { :controller => "boards", :action => "index" })
 
   # Routes for the Post resource:
@@ -16,7 +17,7 @@ Rails.application.routes.draw do
   post("/modify_post/:path_id", { :controller => "posts", :action => "update" })
   
   # DELETE
-  get("/delete_post/:path_id", { :controller => "posts", :action => "destroy" })
+  get("/delete_post/:board_id/:post_id", { :controller => "posts", :action => "destroy" })
 
   #------------------------------
 
@@ -42,5 +43,6 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
+  root "boards#index"
   # root "articles#index"
 end
